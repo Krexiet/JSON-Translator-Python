@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Translator</title>
+</head>
+<body>
+    <h1>JSON Translator</h1>
+    <form action="/translate" method="post" enctype="multipart/form-data">
+        <label for="input_file">Select JSON File:</label>
+        <input type="file" name="input_file" id="input_file" required>
+        <br>
+        <label for="source_language">Source Language:</label>
+        <select name="source_language" id="source_language">
+            <option value="en">English</option>
+            <option value="uk">Ukrainan</option>
+            <option value="ru">Russian</option>
+            <!-- Add more options for other languages if needed -->
+        </select>
+        <br>
+        <label for="target_language">Target Language:</label>
+        <select name="target_language" id="target_language">
+            <option value="fr">French</option>
+            <option value="ar">Arabian</option>
+            <option value="de">Germany</option>
+            <!-- Add more options for other languages if needed -->
+        </select>
+        <br>
+        <label for="exclude_strings">Exclude Strings:</label>
+        <input type="text" name="exclude_strings" id="exclude_strings" placeholder="Enter comma-separated phrases to exclude">
+        <br>
+        <button type="submit">Translate</button>
+    </form>
+
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/translate', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.blob();
+            const url = window.URL.createObjectURL(new Blob([data]));
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'output.json'; // Имя файла для скачивания
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+    </script>
+    
+</body>
+</html>
